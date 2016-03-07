@@ -6,7 +6,7 @@ exchange = "CME"
 symbols = ["CLF2016", "CLG2016", "CLH2016"]
 #symbol = "CME/CLF2016"
 
-con = mdb.connect('localhost', 'dbuser', 'dbuser', 'mydb');
+con = mdb.connect('localhost', 'dbuser', 'dbuser', 'homestead');
 with con: #this creates the two tables, symbols and prices, and drops them if they already exist
 	cur = con.cursor()
 	#cur.execute("SET FOREIGN_KEY_CHECKS=0")
@@ -41,13 +41,16 @@ cur.execute(sql)
 symbols = cur.fetchall()
 
 for row in symbols:
-	exchange = row[0]
-	symbol = row[1]
-	futureType = row[2]
-	futureCat  = row[3]
-	expireMonth = row[4]
-	expireYear = row[5]
-	stillUpdated = row[6]
+	print row
+	symbolId = row[0]
+	exchange = row[1]
+	symbol = row[2]
+	futureType = row[3]
+	futureCat  = row[4]
+	expireMonth = row[5]
+	expireYear = row[6]
+	#stillUpdated = row[7]
+	
 	##first we have to make sure the symbol is in the parent table (Symbols) or inserts into the child (Prices) will fail
 	#sql = "INSERT INTO Symbols(exchange, symbol, type, cat, expire_month, expire_year, updated) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE exchange=VALUES(exchange), type=VALUES(type), cat=VALUES(cat), expire_month=VALUES(expire_month), expire_year=VALUES(expire_year), updated=VALUES(updated)" % \
 	#(exchange, symbol, futureType, futureCat, expireMonth, expireYear, stillUpdated)
@@ -57,8 +60,8 @@ for row in symbols:
 	for index, row in myData.iterrows():
 		#print(row.Open, row.High)
 		#print index
-		sql = "INSERT INTO Prices(date, symbol, open, high, low, last, settle, volume) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE symbol=VALUES(symbol), open=VALUES(open), high=VALUES(high), low=VALUES(low), last=VALUES(last), settle=VALUES(settle), volume=VALUES(volume)" % \
-		(index, symbol, row.Open, row.High, row.Low, row.Last, row.Settle, row.Volume)
+		sql = "INSERT INTO Prices(date, symbol_id, open, high, low, last, settle, volume) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE symbol_id=VALUES(symbol_id), open=VALUES(open), high=VALUES(high), low=VALUES(low), last=VALUES(last), settle=VALUES(settle), volume=VALUES(volume)" % \
+		(index, symbolId, row.Open, row.High, row.Low, row.Last, row.Settle, row.Volume)
 		#print sql
 		cur.execute(sql)
 
