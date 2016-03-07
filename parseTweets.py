@@ -7,7 +7,7 @@ symbols = ["AAPL", "SPY", "IBM"]
 baseUrl = "https://api.stocktwits.com/api/2/streams/symbol/"
 urlSuffix = ".json"
 
-con = mdb.connect('localhost', 'dbuser', 'dbuser', 'mydb');
+con = mdb.connect('localhost', 'dbuser', 'dbuser', 'homestead');
 with con: #this creates the two tables, symbols and prices, and drops them if they already exist
 	cur = con.cursor()
 	sql = "SELECT * FROM Symbols WHERE type='index'"
@@ -16,13 +16,14 @@ with con: #this creates the two tables, symbols and prices, and drops them if th
 
 
 for row in symbols:
-	exchange = row[0]
-	symbol = row[1]
-	futureType = row[2]
-	futureCat  = row[3]
-	expireMonth = row[4]
-	expireYear = row[5]
-	stillUpdated = row[6]
+	dbID = row[0]
+	exchange = row[1]
+	symbol = row[2]
+	futureType = row[3]
+	futureCat  = row[4]
+	expireMonth = row[5]
+	expireYear = row[6]
+	#stillUpdated = row[7]
 	url = baseUrl + symbol + urlSuffix
 	#https://api.stocktwits.com/api/2/streams/symbol/AAPL.json
 	
