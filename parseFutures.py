@@ -60,10 +60,9 @@ for row in symbols:
 	for index, row in myData.iterrows():
 		#print(row.Open, row.High)
 		#print index
-		sql = "INSERT INTO Prices(date, symbol_id, open, high, low, last, settle, volume) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE symbol_id=VALUES(symbol_id), open=VALUES(open), high=VALUES(high), low=VALUES(low), last=VALUES(last), settle=VALUES(settle), volume=VALUES(volume)" % \
-		(index, symbolId, row.Open, row.High, row.Low, row.Last, row.Settle, row.Volume)
+		sql = "INSERT INTO Prices(date, symbol_id, open, high, low, last, settle, volume) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE symbol_id=VALUES(symbol_id), open=VALUES(open), high=VALUES(high), low=VALUES(low), last=VALUES(last), settle=VALUES(settle), volume=VALUES(volume)"
 		#print sql
-		cur.execute(sql)
+		cur.execute(sql, (index, symbolId, row.Open, row.High, row.Low, row.Last, row.Settle, row.Volume))
 
 		#sql = "INSERT INTO Prices(date, open, high, low, last, settle, volume) VALUES ('2015-10-22 00:00:00', '48.06', '48.18', '47.08', '47.34', '47.35', '34628.0') ON DUPLICATE KEY UPDATE "
 		#print sql

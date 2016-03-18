@@ -43,10 +43,9 @@ for row in symbols:
 		print("Message Username: " + str(username))
 		print "\n"
 		
-		sql = "INSERT INTO Tweets(timestamp, message_id, body, username) VALUES ('%s', '%s', '%s', '%s') ON DUPLICATE KEY UPDATE timestamp=VALUES(timestamp), message_id=VALUES(message_id), body=VALUES(body), username=VALUES(username)" % \
-		(timestamp, messageId, body, username)
+		sql = "INSERT INTO Tweets(timestamp, message_id, body, username) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE timestamp=VALUES(timestamp), message_id=VALUES(message_id), body=VALUES(body), username=VALUES(username)"
 		#print sql
-		cur.execute(sql)
+		cur.execute(sql, (timestamp, messageId, body, username))
 	con.commit()
 		
 		
