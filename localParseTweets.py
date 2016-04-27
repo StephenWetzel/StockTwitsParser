@@ -4,20 +4,21 @@ import json
 import sys
 
 
-tweetsFileName = "stocktwits_messages_2014-01-01-2014-12-31.json"
+tweetsFileName = "stock.json"
 
-try:
-	symbol = sys.argv[1]
-except IndexError:
-	symbol = "TEST"
-	print "No symbol passed in"
-symbol = '$' + symbol
-
-print "Symbol: " + symbol + "\n\n"
-
+#get all the symbols stored in the db:
 con = mdb.connect('localhost', 'dbuser', 'dbuser', 'homestead');
 with con:
 	cur = con.cursor()
+	sql = "SELECT * FROM Symbols WHERE type='index'"
+	cur.execute(sql)
+	symbolRows = cur.fetchall()
+
+#convert db rows to a list of symbols that we care about
+symbols = []
+for row in symbolRows:
+	symbol = row[2]
+	symbols.append(symbol)
 
 try:
 	with open(tweetsFileName, 'r') as iFile:
@@ -38,7 +39,7 @@ try:
 
 			#Time to run on full 2014 data, search for AAPL, add tweets to DB: 1m1.396s
 
-			if symbol in line:
+			if any(symbol in line for symbol in symbols):
 				tweet = json.loads(line)
 				
 				body = tweet['body'].encode('utf-8')
@@ -57,6 +58,6 @@ try:
 				cur.execute(sql, (timestamp, messageId, body, username))
 		con.commit()
 
-except (IOError, ValueError): #file does not exist, so create an empty foods obj
+except (IOError, ValueError): #file does not exist
 	print "File Not Found"
 
